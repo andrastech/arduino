@@ -1,1 +1,34 @@
-//test
+#include <IRremote.h>
+#include <MideaIR.h>
+
+#define IR_EMITER       3
+#define THREE_SECONDS    3000
+
+// IRsend Object and Remote Control object
+IRsend irsend;
+MideaIR remote_control(&irsend);
+
+void setup(){
+  Serial.begin(115200);
+  // Define IR PIN as Output
+  pinMode(IR_EMITER, OUTPUT);
+
+}
+
+void loop(){
+  if (Serial.available()) {
+    char ser = Serial.read();
+    switch (ser) {
+      case '1':
+        remote_control.turnON();
+        delay(THREE_SECONDS);
+        Serial.print("a");
+        break;
+       case '0':
+        remote_control.turnOFF();
+        delay(THREE_SECONDS);
+        Serial.print("b");
+        break;
+    }
+  }
+}

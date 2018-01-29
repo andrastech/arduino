@@ -3,9 +3,9 @@
 #include <PubSubClient.h>
 
 //define connection data for wifi and mqtt
-const char* ssid = "SSID";
-const char* password = "PASS";
-const char* mqtt_server = "IP of MQTT";
+const char* ssid = "HAN";
+const char* password = "th1nkpad";
+const char* mqtt_server = "172.16.2.170";
 const int mqtt_port = 1883;
 const char* TopicIn = "/Sufragerie/AC/commands";
 const char* TopicOut = "/Sufragerie/AC/states";
@@ -40,26 +40,26 @@ void callback(char* topic, byte* payload, unsigned int lenght) {
   String topicStr = topic;
 
    if((char)payload[0] == 'O' && (char)payload[1] == 'N') {
-    Serial.print("AC-ON");
+    Serial.print("1");
     respond();  
     }
 
   if((char)payload[0] == 'O' && (char)payload[1] == 'F' && (char)payload[2] == 'F') {
-    Serial.print("AC-OFF");
+    Serial.print("0");
     respond();  
     }
 }
 
 void respond() {
-  delay(5);
+  delay(6000);
   if (Serial.available()) {
     char ser =Serial.read();
   switch (ser) {
-      case 'AC-is-ON':
-    client.publish(TopicOut, "AC-is-ON");
+      case 'a':
+    client.publish(TopicOut, "ON");
     break;
-      case 'AC-is-OFF':
-    client.publish(TopicOut, "AC-is-OFF");
+      case 'b':
+    client.publish(TopicOut, "OFF");
     break;
     } //switch
   } //if
