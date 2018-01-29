@@ -17,18 +17,15 @@ void setup(){
 
 void loop(){
   if (Serial.available()) {
-    char ser = Serial.read();
-    switch (ser) {
-      case '1':
+    String ser = Serial.readString();
+    if (ser == "AC-ON") {
         remote_control.turnON();
         delay(THREE_SECONDS);
-        Serial.print("a");
-        break;
-       case '0':
+        Serial.print("ac-is-on");
+    } else if (ser == "AC-OFF") {
         remote_control.turnOFF();
         delay(THREE_SECONDS);
-        Serial.print("b");
-        break;
+        Serial.print("ac-is-off");
     }
   }
 }

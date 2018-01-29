@@ -40,12 +40,12 @@ void callback(char* topic, byte* payload, unsigned int lenght) {
   String topicStr = topic;
 
    if((char)payload[0] == 'O' && (char)payload[1] == 'N') {
-    Serial.print("1");
+    Serial.print("AC-ON");
     respond();  
     }
 
   if((char)payload[0] == 'O' && (char)payload[1] == 'F' && (char)payload[2] == 'F') {
-    Serial.print("0");
+    Serial.print("AC-OFF");
     respond();  
     }
 }
@@ -53,17 +53,14 @@ void callback(char* topic, byte* payload, unsigned int lenght) {
 void respond() {
   delay(6000);
   if (Serial.available()) {
-    char ser =Serial.read();
-  switch (ser) {
-      case 'a':
-    client.publish(TopicOut, "ON");
-    break;
-      case 'b':
-    client.publish(TopicOut, "OFF");
-    break;
-    } //switch
-  } //if
-} //void
+    String ser = Serial.readString();
+    if (ser == "ac-is-on") {
+      client.publish(TopicOut, "ON");
+      } else if (ser == "ac-is-off") {
+        client.publish(TopicOut, "OFF");
+     }  
+  }
+}
 
 void reconnect() {
   if(WiFi.status() != WL_CONNECTED) {
