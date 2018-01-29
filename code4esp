@@ -7,8 +7,8 @@ const char* ssid = "HAN";
 const char* password = "th1nkpad";
 const char* mqtt_server = "172.16.2.170";
 const int mqtt_port = 1883;
-const char* TopicIn = "/Sufragerie/AC/commands";
-const char* TopicOut = "/Sufragerie/AC/states";
+const char* TopicIn = "/Sufragerie/AC";
+const char* TopicOut = "/Sufragerie/AC/status";
 
 WiFiClient ESPagbAC;
 
@@ -96,3 +96,4 @@ String macToStr(const uint8_t* mac) {
   }
   return result;
 }
+//Switch SufragerieAC {mqtt=">[broker:/Sufragerie/AC:command:*:default],<[broker:/Sufragerie/AC/status:state:default]", autoupdate="false" }
