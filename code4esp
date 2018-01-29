@@ -6,8 +6,9 @@
 const char* ssid = "SSID";
 const char* password = "PASS";
 const char* mqtt_server = "IP of MQTT";
-const char* mqtt_port = 1883;
-const char* Topic = "/Sufragerie/AC/commands";
+const int mqtt_port = 1883;
+const char* TopicIn = "/Sufragerie/AC/commands";
+const char* TopicOut = "/Sufragerie/AC/states";
 
 WiFiClient ESPagbAC;
 
@@ -15,8 +16,7 @@ void setup() {
   
   Serial.begin(115200);
   delay(100);
-  setup_wifi();
-  Wifi.begin(ssid, password);
+  WiFi.begin(ssid, password);
   reconnect();
   delay(2000);
 }
@@ -56,10 +56,10 @@ void respond() {
     char ser =Serial.read();
   switch (ser) {
       case 'AC-is-ON':
-    client.publish("/Sufragerie/AC/states", "AC-is-ON");
+    client.publish(TopicOut, "AC-is-ON");
     break;
       case 'AC-is-OFF':
-    client.publish("/Sufragerie/AC/states", "AC-is-OFF");
+    client.publish(TopicOut, "AC-is-OFF");
     break;
     } //switch
   } //if
@@ -82,7 +82,7 @@ if(WiFi.status() ==WL_CONNECTED) {
 
     if (client.connect((char*) clientName.c_str())) {
       Serial.print("\tMQTT Connected");
-      client.subscribe(Topic);
+      client.subscribe(TopicIn);
     }
     else{Serial.println("\tFailed."); abort();}
   }
