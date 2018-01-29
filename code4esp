@@ -48,6 +48,21 @@ void callback(char* topic, byte* payload, unsigned int lenght) {
     Serial.print("AC-OFF");
     respond();  
     }
+
+  if((char)payload[0] == 'C' && (char)payload[1] == 'O' && (char)payload[2] == 'O' && (char)payload[3] == 'L') {
+    Serial.print("COOL");
+    respond();  
+    }
+
+  if((char)payload[0] == 'H' && (char)payload[1] == 'E' && (char)payload[2] == 'A' && (char)payload[3] == 'T') {
+    Serial.print("HEAT");
+    respond();  
+    }
+
+  if((char)payload[0] == 'A' && (char)payload[1] == 'U' && (char)payload[2] == 'T' && (char)payload[3] == 'O') {
+    Serial.print("AUTO");
+    respond();  
+    }
 }
 
 void respond() {
@@ -58,6 +73,12 @@ void respond() {
       client.publish(TopicOut, "ON");
       } else if (ser == "ac-is-off") {
         client.publish(TopicOut, "OFF");
+      } else if (ser == "cool") {
+        client.publish(TopicOut, "COOL");
+      } else if (ser == "heat") {
+        client.publish(TopicOut, "HEAT");
+      } else if (ser == "auto") {
+        client.publish(TopicOut, "AUTO");
      }  
   }
 }
@@ -96,4 +117,3 @@ String macToStr(const uint8_t* mac) {
   }
   return result;
 }
-//Switch SufragerieAC {mqtt=">[broker:/Sufragerie/AC:command:*:default],<[broker:/Sufragerie/AC/status:state:default]", autoupdate="false" }

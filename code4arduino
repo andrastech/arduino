@@ -25,18 +25,42 @@ void loop(){
 
     // AC-ON of AC-OFF commands
     if (ser == "AC-ON") {
+        remote_control.setState(true);
         remote_control.turnON();
         digitalWrite(onled, HIGH);
         delay(THREE_SECONDS);
         Serial.print("ac-is-on");
         digitalWrite(onled, LOW);
     } else if (ser == "AC-OFF") {
+        remote_control.setState(true);
         remote_control.turnOFF();
         digitalWrite(offled, HIGH);
         delay(THREE_SECONDS);
         Serial.print("ac-is-off");
         digitalWrite(offled, LOW);
+     } else if (ser == "COOL") {
+        remote_control.setState(true);
+        remote_control.setTemperature(24);
+        remote_control.setMode(mode_cool);
+        remote_control.emit();
+        delay(THREE_SECONDS);
+        Serial.print("cool");
+     } else if (ser == "HEAT") {
+        remote_control.setState(true);
+        remote_control.setTemperature(26);
+        #ifdef MIDEA_COOL_HEAT
+        remote_control.setMode(mode_heat);
+        #endif
+        remote_control.emit();
+        delay(THREE_SECONDS);
+        Serial.print("heat");
+     } else if (ser == "AUTO") {
+        remote_control.setState(true);
+        remote_control.setTemperature(25);
+        remote_control.setMode(mode_auto);
+        remote_control.emit();
+        delay(THREE_SECONDS);
+        Serial.print("auto");
     }
   }
 }
-//Switch SufragerieAC {mqtt=">[broker:/Sufragerie/AC:command:*:default],<[broker:/Sufragerie/AC/status:state:default]", autoupdate="false" }
