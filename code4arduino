@@ -7,11 +7,15 @@
 // IRsend Object and Remote Control object
 IRsend irsend;
 MideaIR remote_control(&irsend);
+int onled = 13;
+int offled = 12;
 
 void setup(){
   Serial.begin(115200);
   // Define IR PIN as Output
   pinMode(IR_EMITER, OUTPUT);
+  pinMode(onled, OUTPUT);
+  pinMode(offled, OUTPUT);
 
 }
 
@@ -20,12 +24,16 @@ void loop(){
     String ser = Serial.readString();
     if (ser == "AC-ON") {
         remote_control.turnON();
+        digitalWrite(onled, HIGH);
         delay(THREE_SECONDS);
         Serial.print("ac-is-on");
+        digitalWrite(onled, LOW);
     } else if (ser == "AC-OFF") {
         remote_control.turnOFF();
+        digitalWrite(offled, HIGH);
         delay(THREE_SECONDS);
         Serial.print("ac-is-off");
+        digitalWrite(offled, LOW);
     }
   }
 }
