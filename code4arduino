@@ -1,36 +1,55 @@
-#include <IRremote.h>
+//WARNING!!!
+//This code has not been written by a programmer!
+//This is merely a collection of bits and pieces put together
+//to make a personal project work
+
+//
+//  put together by agb
+//
+
+
+// 
+// This code is for the AVR board meant to
+// receive serial signals and send IR signals
+//
+
+#include <IRremote.h>                     //include needed library
 #include <MideaIR.h>
 
-#define IR_EMITER       3
-#define THREE_SECONDS    3000
+#define IR_EMITER      3                  //define emitter pin
+#define THREE_SECONDS  3000               //define delay
 
-// IRsend Object and Remote Control object
-IRsend irsend;
-MideaIR remote_control(&irsend);
-int onled = 13; //GREEN led on AC-ON
-int offled = 12; //RED led on AC-OFF
+IRsend irsend;                            //irsend object
+MideaIR remote_control(&irsend);          //remote control object
+
+int onled = 13;                           //GREEN led on AC-ON
+int offled = 12;                          //RED led on AC-OFF
 
 void setup(){
-  Serial.begin(115200);
-  // Define IR PIN as Output
-  pinMode(IR_EMITER, OUTPUT);
-  pinMode(onled, OUTPUT);
+
+  Serial.begin(115200);                   //start serial with specified baud rate
+
+  pinMode(IR_EMITER, OUTPUT);             //define IR emitter as output
+  pinMode(onled, OUTPUT);                 //define the two visible leds as output
   pinMode(offled, OUTPUT);
 
 }
 
 void loop(){
+
+  //Check if serial is available
   if (Serial.available()) {
+
+    //Read from serial as string
     String ser = Serial.readString();
 
-    // AC-ON of AC-OFF commands
-    if (ser == "AC-ON") {
-        remote_control.setState(true);
-        remote_control.turnON();
-        digitalWrite(onled, HIGH);
-        delay(THREE_SECONDS);
-        Serial.print("ac-is-on");
-        digitalWrite(onled, LOW);
+    if (ser == "AC-ON") {                 //if we receive specified string on RX serial  
+        remote_control.setState(true);    //MIDEA WRAPPER needs this set to true
+        remote_control.turnON();          //use MIDEA to turn ON the AC
+        digitalWrite(onled, HIGH);        //turn ON the GREEN led
+        delay(THREE_SECONDS);             //wait for 3 sec
+        Serial.print("ac-is-on");         //send specified string on TX serial
+        digitalWrite(onled, LOW);         //turn OFF the GREEN led 
     } else if (ser == "AC-OFF") {
         remote_control.setState(true);
         remote_control.turnOFF();
@@ -49,7 +68,7 @@ void loop(){
      } else if (ser == "HEAT") {
         remote_control.setState(true);
         remote_control.setTemperature(26);
-        remote_control.setMode(mode_auto);
+        remote_control.setMode(mode_auto);//Here we use auto, as our AC does not recognize HEAT
         remote_control.emit();
         delay(THREE_SECONDS);
         Serial.print("heat");

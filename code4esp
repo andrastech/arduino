@@ -1,71 +1,78 @@
-//Include wifi and mqtt needed libraries
-#include <ESP8266WiFi.h>
-#include <PubSubClient.h>
+//WARNING!!!
+//This code has not been written by a programmer!
+//This is merely a collection of bits and pieces put together
+//to make a personal project work
 
-//define connection data for wifi and mqtt
-const char* ssid = "HAN";
-const char* password = "th1nkpad";
-const char* mqtt_server = "172.16.2.170";
-const int mqtt_port = 1883;
-const char* TopicIn = "/Sufragerie/AC";
-const char* TopicOut = "/Sufragerie/AC/status";
+//
+//  put together by agb
+//
 
-WiFiClient ESPagbAC;
+// 
+// This code is for the ESP board meant to
+// communicate with mqtt and send serial signals accordingly to the AVR board
+//
+
+#include <ESP8266WiFi.h>                                             //include WiFi library
+#include <PubSubClient.h>                                            //include library needed for publishing to mqtt
+
+const char* ssid = "HAN";                                            //set the SSID of wireless network
+const char* password = "th1nkpad";                                   //set the wireless network's password
+const char* mqtt_server = "172.16.2.170";                            //set the URL or IP address of the MQTT server
+const int mqtt_port = 1883;                                          //set the MQTT server's port
+const char* TopicIn = "/Sufragerie/AC";                              //set the subscribe MQTT topic - the one on which messages arrive
+const char* TopicOut = "/Sufragerie/AC/status";                      //set the publish MQTT topic - the one which messages will be sent out on
+
+WiFiClient ESPagbAC;                                                 //create uninitialised client instance
 
 void setup() {
   
-  Serial.begin(115200);
-  delay(100);
-  WiFi.begin(ssid, password);
+  Serial.begin(115200);                                              //start serial with specified baud rate
+  delay(100);                                                        //specify delay
+  WiFi.begin(ssid, password);                                        //start wifi connection
   reconnect();
   delay(2000);
 }
 
-PubSubClient client(mqtt_server, mqtt_port, callback, ESPagbAC);
+PubSubClient client(mqtt_server, mqtt_port, callback, ESPagbAC);     //create configured client instance
 
 void loop() {
   
-  //reconnect if connection is lost
-  if (!client.connected() && WiFi.status() ==3) {reconnect();}
-
-  //maintain MQTT connection
-  client.loop();
-
-  //delay for wifi functions to run
-  delay(100);
+  if (!client.connected() && WiFi.status() ==3) {reconnect();}       //reconnect if connection is lost
+    client.loop();                                                     //maintain MQTT connection
+    delay(100);                                                        //delay for wifi functions to run
 }
 
-void callback(char* topic, byte* payload, unsigned int lenght) {
+void callback(char* topic, byte* payload, unsigned int lenght) {     //provide callback function for arrived messages on subscribed topics
 
   String topicStr = topic;
 
-   if((char)payload[0] == 'O' && (char)payload[1] == 'N') {
-    Serial.print("AC-ON");
-    respond();  
-    }
+  if((char)payload[0] == 'O' && (char)payload[1] == 'N') {          //check if first character in arrived mqtt message is O and second character is ON
+    Serial.print("AC-ON");                                           //if the above is true then send specified message on serial TX
+    respond();                                                       //call the respond function initialized below
+  }
 
   if((char)payload[0] == 'O' && (char)payload[1] == 'F' && (char)payload[2] == 'F') {
     Serial.print("AC-OFF");
     respond();  
-    }
+  }
 
   if((char)payload[0] == 'C' && (char)payload[1] == 'O' && (char)payload[2] == 'O' && (char)payload[3] == 'L') {
     Serial.print("COOL");
     respond();  
-    }
+  }
 
   if((char)payload[0] == 'H' && (char)payload[1] == 'E' && (char)payload[2] == 'A' && (char)payload[3] == 'T') {
     Serial.print("HEAT");
     respond();  
-    }
+  }
 }
 
-void respond() {
-  delay(6000);
-  if (Serial.available()) {
-    String ser = Serial.readString();
-    if (ser == "ac-is-on") {
-      client.publish(TopicOut, "ON");
+void respond() {                                                     //respond function 
+  delay(6000);                                                       //allow time between mqtt messages
+  if (Serial.available()) {                                          //if serial connection available
+    String ser = Serial.readString();                                //define specified object to hold the string
+    if (ser == "ac-is-on") {                                         //if message on RX serial is the specified one <ac-is-on>
+      client.publish(TopicOut, "ON");                                //then publish specified string <ON> on already defined topic
       } else if (ser == "ac-is-off") {
         client.publish(TopicOut, "OFF");
       } else if (ser == "cool") {
@@ -76,28 +83,28 @@ void respond() {
   }
 }
 
-void reconnect() {
+void reconnect() {                                                   //function check Wifi status and reconnect
   if(WiFi.status() != WL_CONNECTED) {
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
     }
   }
 
-if(WiFi.status() ==WL_CONNECTED) {
-  while (!client.connected()) {
-    String clientName;
-    clientName += "ESPagbAC-";
-    uint8_t mac[6];
-    WiFi.macAddress(mac);
-    clientName += macToStr(mac);
+  if(WiFi.status() ==WL_CONNECTED) {                                   //constructing client name for mqtt connection
+    while (!client.connected()) {
+      String clientName;
+      clientName += "ESPagbAC-";
+      uint8_t mac[6];
+      WiFi.macAddress(mac);
+      clientName += macToStr(mac);
 
-    if (client.connect((char*) clientName.c_str())) {
-      Serial.print("\tMQTT Connected");
-      client.subscribe(TopicIn);
+      if (client.connect((char*) clientName.c_str())) {
+        Serial.print("\tMQTT Connected");
+        client.subscribe(TopicIn);                                     //actual mqtt client subscribe
+      }
+      else{Serial.println("\tFailed."); abort();}
     }
-    else{Serial.println("\tFailed."); abort();}
   }
-}
 }
 
 String macToStr(const uint8_t* mac) {
