@@ -63,15 +63,19 @@ void loop(){
         remote_control.setMode(mode_cool);
         remote_control.setSpeedFan(fan_speed_3);
         remote_control.emit();
+        digitalWrite(onled, HIGH);
         delay(THREE_SECONDS);
         Serial.print("cool");
+        digitalWrite(onled, LOW);
      } else if (ser == "HEAT") {
         remote_control.setState(true);
         remote_control.setTemperature(26);
         remote_control.setMode(mode_auto);//Here we use auto, as our AC does not recognize HEAT
         remote_control.emit();
+        digitalWrite(onled, HIGH);
         delay(THREE_SECONDS);
         Serial.print("heat");
+        digitalWrite(onled, LOW);
     }
   }
 }
