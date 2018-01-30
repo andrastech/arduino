@@ -22,8 +22,8 @@
 IRsend irsend;                            //irsend object
 MideaIR remote_control(&irsend);          //remote control object
 
-int onled = 8;                           //GREEN led on AC-ON
-int offled = 9;                          //RED led on AC-OFF
+int onled = 8;                            //GREEN led on AC-ON
+int offled = 9;                           //RED led on AC-OFF
 
 void setup(){
 
