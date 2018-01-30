@@ -58,11 +58,6 @@ void callback(char* topic, byte* payload, unsigned int lenght) {
     Serial.print("HEAT");
     respond();  
     }
-
-  if((char)payload[0] == 'A' && (char)payload[1] == 'U' && (char)payload[2] == 'T' && (char)payload[3] == 'O') {
-    Serial.print("AUTO");
-    respond();  
-    }
 }
 
 void respond() {
@@ -77,8 +72,6 @@ void respond() {
         client.publish(TopicOut, "COOL");
       } else if (ser == "heat") {
         client.publish(TopicOut, "HEAT");
-      } else if (ser == "auto") {
-        client.publish(TopicOut, "AUTO");
      }  
   }
 }

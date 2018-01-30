@@ -40,27 +40,19 @@ void loop(){
         digitalWrite(offled, LOW);
      } else if (ser == "COOL") {
         remote_control.setState(true);
-        remote_control.setTemperature(24);
+        remote_control.setTemperature(23);
         remote_control.setMode(mode_cool);
+        remote_control.setSpeedFan(fan_speed_3);
         remote_control.emit();
         delay(THREE_SECONDS);
         Serial.print("cool");
      } else if (ser == "HEAT") {
         remote_control.setState(true);
         remote_control.setTemperature(26);
-        #ifdef MIDEA_COOL_HEAT
-        remote_control.setMode(mode_heat);
-        #endif
-        remote_control.emit();
-        delay(THREE_SECONDS);
-        Serial.print("heat");
-     } else if (ser == "AUTO") {
-        remote_control.setState(true);
-        remote_control.setTemperature(25);
         remote_control.setMode(mode_auto);
         remote_control.emit();
         delay(THREE_SECONDS);
-        Serial.print("auto");
+        Serial.print("heat");
     }
   }
 }
