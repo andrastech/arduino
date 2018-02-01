@@ -22,17 +22,20 @@
 IRsend irsend;                            //irsend object
 MideaIR remote_control(&irsend);          //remote control object
 
-int onled = 8;                            //GREEN led on AC-ON
-int offled = 9;                           //RED led on AC-OFF
+int red = 7;                              //define LEDs
+int green = 8;
+int blue = 9;
+//int offled = 9;
 
 void setup(){
 
   Serial.begin(115200);                   //start serial with specified baud rate
 
   pinMode(IR_EMITER, OUTPUT);             //define IR emitter as output
-  pinMode(onled, OUTPUT);                 //define the two visible leds as output
-  pinMode(offled, OUTPUT);
-
+  pinMode(red, OUTPUT);
+  pinMode(green, OUTPUT);
+  pinMode(blue, OUTPUT);                
+  
 }
 
 void loop(){
@@ -46,36 +49,53 @@ void loop(){
     if (ser == "AC-ON") {                 //if we receive specified string on RX serial  
         remote_control.setState(true);    //MIDEA WRAPPER needs this set to true
         remote_control.turnON();          //use MIDEA to turn ON the AC
-        digitalWrite(onled, HIGH);        //turn ON the GREEN led
+        digitalWrite(green, HIGH);        //turn ON the GREEN led
         delay(THREE_SECONDS);             //wait for 3 sec
         Serial.print("ac-is-on");         //send specified string on TX serial
-        digitalWrite(onled, LOW);         //turn OFF the GREEN led 
+        digitalWrite(green, LOW);         //turn OFF the GREEN led 
     } else if (ser == "AC-OFF") {
         remote_control.setState(true);
         remote_control.turnOFF();
-        digitalWrite(offled, HIGH);
+        digitalWrite(green, HIGH);
+        delay(100);
+        digitalWrite(green, LOW);
+        digitalWrite(blue, HIGH);
+        delay(100);
+        digitalWrite(blue, LOW);
+        digitalWrite(red, HIGH);
+        delay(100);
+        digitalWrite(red, LOW);
+        delay(300);
+        digitalWrite(green, HIGH);
+        delay(100);
+        digitalWrite(green, LOW);
+        digitalWrite(blue, HIGH);
+        delay(100);
+        digitalWrite(blue, LOW);
+        digitalWrite(red, HIGH);
+        delay(100);
+        digitalWrite(red, LOW);
         delay(THREE_SECONDS);
         Serial.print("ac-is-off");
-        digitalWrite(offled, LOW);
      } else if (ser == "COOL") {
         remote_control.setState(true);
         remote_control.setTemperature(23);
         remote_control.setMode(mode_cool);
         remote_control.setSpeedFan(fan_speed_3);
         remote_control.emit();
-        digitalWrite(onled, HIGH);
+        digitalWrite(blue, HIGH);
         delay(THREE_SECONDS);
         Serial.print("cool");
-        digitalWrite(onled, LOW);
+        digitalWrite(blue, LOW);
      } else if (ser == "HEAT") {
         remote_control.setState(true);
         remote_control.setTemperature(26);
         remote_control.setMode(mode_auto);//Here we use auto, as our AC does not recognize HEAT
         remote_control.emit();
-        digitalWrite(onled, HIGH);
+        digitalWrite(red, HIGH);
         delay(THREE_SECONDS);
         Serial.print("heat");
-        digitalWrite(onled, LOW);
+        digitalWrite(red, LOW);
     }
   }
 }
