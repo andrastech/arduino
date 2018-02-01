@@ -25,7 +25,6 @@ MideaIR remote_control(&irsend);          //remote control object
 int red = 7;                              //define LEDs
 int green = 8;
 int blue = 9;
-//int offled = 9;
 
 void setup(){
 
