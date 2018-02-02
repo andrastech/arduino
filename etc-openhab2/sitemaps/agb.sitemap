@@ -1,0 +1,7 @@
+sitemap agb label="ac controll"
+{
+        Frame label="AC Power"{
+                Switch item=SufragerieAC label="AC"
+                Selection item=AC_Mode label="AC mode"  mappings=[COOL="COOL",HEAT="HEAT",OFF="OFF"]
+        }
+}

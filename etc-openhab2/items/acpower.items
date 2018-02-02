@@ -1,0 +1,1 @@
+Switch SufragerieAC {mqtt=">[broker:/Sufragerie/AC:command:*:default],<[broker:/Sufragerie/AC/status:state:default]", autoupdate="false" }

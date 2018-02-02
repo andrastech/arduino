@@ -1,0 +1,1 @@
+String AC_Mode "Mode is [MAP(acmodes.map):%s]" { mqtt=">[broker:/Sufragerie/AC:command:*:default],<[broker:/Sufragerie/AC/status:state:default]"}
